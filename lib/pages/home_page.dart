@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/cart_widget.dart';
 import '../widgets/profile_widget.dart';
 import '../widgets/product_widget.dart';
 import '../widgets/category_widget.dart';
@@ -17,7 +18,8 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = const [
     ProductWidget(),
     CategoryWidget(),
-    ProfileWidget()
+    CartWidget(),
+    ProfileWidget(),
   ];
 
   void _onItemTapped(int index) {
@@ -33,11 +35,15 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
         showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
               icon: Icon(Icons.category), label: "Category"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart), label: "Cart"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),

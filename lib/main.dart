@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
@@ -14,11 +15,25 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: FutureBuilder(
+        future: isLoggedIn(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return (snapshot.data!) ? const HomePage() : const LoginPage();
+          }
+          return const LoginPage();
+        },
+      ),
       routes: {
         "/login": (context) => const LoginPage(),
         "/home": (context) => const HomePage(),
       },
     );
+  }
+
+  Future<bool> isLoggedIn() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    bool isLogin = pref.getBool("isLoggedIn") ?? false;
+    return isLogin;
   }
 }

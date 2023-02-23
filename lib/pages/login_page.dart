@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -94,6 +95,11 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  setIsLoggedInPref() async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    sharedPref.setBool("isLoggedIn", true);
+  }
+
   void validate(BuildContext ctx) async {
     setState(() {
       isLoading = true;
@@ -107,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return;
     var body = response.body;
     if (response.statusCode == 200) {
+      setIsLoggedInPref();
       Navigator.pushReplacementNamed(ctx, '/home');
     } else {
       ScaffoldMessenger.of(ctx).showSnackBar(
