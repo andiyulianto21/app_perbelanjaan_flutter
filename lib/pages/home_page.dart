@@ -15,11 +15,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
+  final List<Widget> _pages = [
     ProductWidget(),
-    CategoryWidget(),
-    CartWidget(),
-    ProfileWidget(),
+    const CategoryWidget(),
+    const CartWidget(),
+    const ProfileWidget(),
   ];
 
   void _onItemTapped(int index) {

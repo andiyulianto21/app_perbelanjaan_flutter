@@ -1,3 +1,4 @@
+import 'package:app_perbelanjaan/widgets/detail_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/login": (context) => const LoginPage(),
         "/home": (context) => const HomePage(),
+        "/detail": (context) => DetailWidget(),
       },
     );
   }
