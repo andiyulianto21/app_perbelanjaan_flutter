@@ -1,3 +1,4 @@
+import 'package:app_perbelanjaan/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,21 +27,21 @@ class ProfileWidget extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context, rootNavigator: true).pop();
                       },
-                      child: Text("No"),
+                      child: const Text("No"),
                     ),
                     TextButton(
                       onPressed: () {
                         setLogoutPref();
-                        Navigator.pushReplacementNamed(context, "/login");
+                        AppRoutes.toLogin();
                       },
-                      child: Text("Yes"),
+                      child: const Text("Yes"),
                     ),
                   ],
                 );
               },
             );
           },
-          child: Text("LOGOUT"),
+          child: const Text("LOGOUT"),
         ),
       ),
     );

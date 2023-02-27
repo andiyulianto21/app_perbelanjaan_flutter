@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+import '/app_routes.dart';
+import '../controllers/login_controller.dart';
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
 
-class _LoginPageState extends State<LoginPage> {
   TextEditingController inputUsernameC = TextEditingController();
-
   TextEditingController inputPasswordC = TextEditingController();
-
   final formGlobalKey = GlobalKey<FormState>();
-
-  bool isLoading = false;
+  // bool isLoading = false;
+  var controller = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -45,19 +42,31 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Your password input is empty";
-                    }
-                    return null;
-                  },
-                  controller: inputPasswordC,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Input your password",
-                    labelText: "Password",
+                Obx(
+                  () => TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Your password input is empty";
+                      }
+                      return null;
+                    },
+                    controller: inputPasswordC,
+                    obscureText: controller.isHidden.value,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: "Input your password",
+                      labelText: "Password",
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          controller.setIsHidden();
+                        },
+                        icon: Icon(
+                          controller.isHidden.value
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -68,17 +77,22 @@ class _LoginPageState extends State<LoginPage> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (isLoading != true) login(context);
+                      if (!controller.isLoading.value) {
+                        debugPrint("CAN CLICK");
+                        login(context);
+                      }
                     },
-                    child: isLoading
-                        ? const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          )
-                        : const Text(
-                            "LOGIN",
-                            style: TextStyle(fontSize: 18),
-                          ),
+                    child: Obx(
+                      () => controller.isLoading.value
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            )
+                          : const Text(
+                              "LOGIN",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                    ),
                   ),
                 )
               ],
@@ -101,20 +115,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void validate(BuildContext ctx) async {
-    setState(() {
-      isLoading = true;
-    });
-
+    controller.setIsLoading();
     var response = await http
         .post(Uri.parse("https://fakestoreapi.com/auth/login"), body: {
       "username": inputUsernameC.text,
       "password": inputPasswordC.text
     });
-    if (!mounted) return;
+    // if (!mounted) return;
     var body = response.body;
     if (response.statusCode == 200) {
       setIsLoggedInPref();
-      Navigator.pushReplacementNamed(ctx, '/home');
+      AppRoutes.toHome();
     } else {
       ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(
@@ -123,8 +134,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     }
-    setState(() {
-      isLoading = false;
-    });
+    controller.setIsLoading();
   }
 }

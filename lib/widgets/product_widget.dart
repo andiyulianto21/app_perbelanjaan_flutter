@@ -2,31 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/product.dart';
+import 'listview_product.dart';
 
 class ProductWidget extends StatelessWidget {
-  ProductWidget({super.key});
+  const ProductWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Products"),
+      ),
       body: FutureBuilder(
         future: getAllProducts(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // print(snapshot.data);
             var products = snapshot.data;
-            return ListView.builder(
-              itemCount: products!.length,
-              itemBuilder: (context, index) => ListTile(
-                onTap: () => Navigator.pushNamed(context, "/detail",
-                    arguments: products[index]),
-                title: Text(products[index].title),
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(products[index].image),
-                ),
-                trailing: Text("\$${products[index].price}"),
-              ),
-            );
+            return ListViewProducts(products: products);
           } else if (snapshot.hasError) {
             return Center(
               child: Text(snapshot.error.toString()),
